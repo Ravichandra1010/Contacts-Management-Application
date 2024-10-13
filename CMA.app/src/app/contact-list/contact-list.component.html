@@ -1,0 +1,40 @@
+<!-- contacts-app.component.html -->  
+  
+<!-- <h1 class="main-content">Contacts App</h1>   -->
+<!-- <span class="main-content"><button (click)="toggleForm()" class="new-btn">
+    {{ showForm ? 'Show List' : 'New' }}
+  </button></span> -->
+
+  <app-contact-form [contact]="selectedContact" [isAddMode]="isAddMode" *ngIf="showForm" (loadContacts)="loadContacts()"></app-contact-form>
+
+<!-- Main Content Section -->  
+<div class="main-content container" *ngIf="showList">  
+  <table>  
+   <thead>  
+    <tr>  
+      <th>Id</th>  
+      <th>First Name</th>  
+      <th>Last Name</th>  
+      <th>Email</th>  
+      <th>Edit</th>  
+      <th>Delete</th>  
+    </tr>  
+   </thead>  
+   <tbody>  
+    <tr *ngFor="let contact of contacts">  
+      <td>{{ contact.id }}</td>  
+      <td>{{ contact.firstName }}</td>  
+      <td>{{ contact.lastName }}</td>  
+      <td>{{ contact.email }}</td>  
+      <td>  
+       <button class="edit-btn" (click)="editContact(contact)">Edit</button>   
+      </td>  
+      <td>  
+        <button class="delete-btn" (click)="deleteContact(contact.id)">Delete</button>   
+      </td>  
+    </tr>  
+   </tbody>  
+  </table>  
+</div>
+
+

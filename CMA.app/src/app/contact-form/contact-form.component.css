@@ -1,0 +1,43 @@
+.container {
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f8f9fa; /* Light background */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  h2 {
+    color: #007bff; /* Primary color for the heading */
+  }
+  
+  .form-control {
+    border: 1px solid #ced4da; /* Standard border color */
+    border-radius: 5px; /* Rounded corners */
+  }
+  
+  .form-control:focus {
+    border-color: #80bdff; /* Blue border on focus */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Bootstrap focus shadow */
+  }
+  
+  .text-danger {
+    font-size: 0.875rem; /* Slightly smaller error message */
+    color:red;
+  }
+  
+  .btn-primary {
+    background-color: #007bff; /* Primary button color */
+    border-color: #007bff; /* Button border color */
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  .new-btn {
+    background-color: green;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
