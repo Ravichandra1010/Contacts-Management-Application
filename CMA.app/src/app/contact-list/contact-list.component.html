@@ -1,14 +1,20 @@
 <!-- contacts-app.component.html -->  
   
 <!-- <h1 class="main-content">Contacts App</h1>   -->
-<!-- <span class="main-content"><button (click)="toggleForm()" class="new-btn">
-    {{ showForm ? 'Show List' : 'New' }}
-  </button></span> -->
+<span class="main-content"><button (click)="toggleOpen()" class="submit-button" *ngIf="isOpen">
+    New
+  </button></span>
 
-  <app-contact-form [contact]="selectedContact" [isAddMode]="isAddMode" *ngIf="showForm" (loadContacts)="loadContacts()"></app-contact-form>
-
+  <app-contact-form [contact]="selectedContact" (toggle)="toggleOpen()" [isAddMode]="isAddMode" [isShowForm]="isShowForm" (loadContacts)="loadContacts()"></app-contact-form>
+  <div class="search-bar">
+    <input type="text" [(ngModel)]="searchTerm" placeholder="Search contacts..." style="float: right;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;"/>
+  </div>
 <!-- Main Content Section -->  
 <div class="main-content container" *ngIf="showList">  
+  
   <table>  
    <thead>  
     <tr>  
@@ -21,7 +27,7 @@
     </tr>  
    </thead>  
    <tbody>  
-    <tr *ngFor="let contact of contacts">  
+    <tr *ngFor="let contact of filteredContacts | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">  
       <td>{{ contact.id }}</td>  
       <td>{{ contact.firstName }}</td>  
       <td>{{ contact.lastName }}</td>  
@@ -34,7 +40,8 @@
       </td>  
     </tr>  
    </tbody>  
-  </table>  
+  </table>   
+  <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
 </div>
 
 

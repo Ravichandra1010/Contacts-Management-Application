@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../services/contact.service';
 import { Contact } from '../models/contact.model';
-import {  Input, Output, EventEmitter } from '@angular/core';
+import { Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'app-contact-list',
   templateUrl: './contact-list.component.html',
@@ -10,12 +10,15 @@ import {  Input, Output, EventEmitter } from '@angular/core';
 export class ContactListComponent implements OnInit {
   contacts: Contact[] = [];
   selectedContact?: Contact;
-  isAddMode=true;
+  isAddMode = true;
   @Output() saveContact = new EventEmitter<Contact>();
-  showForm: boolean = true;
+  isShowForm: boolean = false;
   showList: boolean = true; // Initially show the list
-
-  constructor(private contactService: ContactService) {}
+  currentPage = 1;
+  itemsPerPage = 5;
+  searchTerm: string = '';
+  isOpen:boolean=true;
+  constructor(private contactService: ContactService) { }
 
   ngOnInit(): void {
     this.loadContacts();
@@ -24,23 +27,39 @@ export class ContactListComponent implements OnInit {
   loadContacts(): void {
 
     this.contactService.getContacts()
-                                .subscribe((result: any) => {
-                                  this.contacts = result;
-                                   
-                                   
-                                }, (error: any) => {
-                                   
-                                });
-}
+      .subscribe((result: any) => {
+        this.contacts = result;
+      }, (error: any) => {
+
+      });
+  }
 
   deleteContact(id: number): void {
-    this.contactService.deleteContact(id).subscribe(() => {
-      this.loadContacts();
-    });
+    const confirmation = confirm('Are you sure you want to delete this contact?');
+    if (confirmation) {
+      this.contactService.deleteContact(id).subscribe(() => {
+        this.loadContacts();
+      });
+    }
   }
 
   editContact(contact: Contact) {
-    this.isAddMode=false;
+    this.isAddMode = false;
+    this.isShowForm=true;
+    this.isOpen = false;
     this.selectedContact = { ...contact }; // Clone contact for editing
+  }
+  // Getter for filtered contacts
+  get filteredContacts() {
+    return this.contacts.filter(contact => 
+      contact.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      contact.lastName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      contact.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
+
+  toggleOpen() {
+    this.isShowForm = !this.isShowForm;
+    this.isOpen = !this.isOpen;
   }
 }

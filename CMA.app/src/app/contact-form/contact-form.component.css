@@ -41,3 +41,46 @@
     font-size: 14px;
     cursor: pointer;
 }
+
+.input-small {
+  height: 23px;
+  width: 12%;
+}
+
+.text-danger {
+  color: red;
+}
+
+.mt-3 {
+  margin-top: 15px;
+}
+
+.mb-3 {
+  margin-bottom: 7px;
+}
+
+.submit-button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #f44336; /* Red */
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.heading {
+  color: #003366; /* Dark Blue */
+  font-size: 24px; /* Adjust size as needed */
+  font-weight: bold; /* Makes it stand out */
+}
+.input-small {
+  margin-left: 30px; /* Adjust margin here */
+}

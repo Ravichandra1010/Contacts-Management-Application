@@ -1,42 +1,43 @@
-<!-- contact-form.component.html -->
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Contact Information</h2>
+<div class="container mt-5" *ngIf="isShowForm">
+    <h2 class="text-center mb-4 heading">Contact Information</h2>
     <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
         <div class="row">
-            <div class="col-md-6 mb-3" style="margin-bottom: 7px;">
-                <label for="firstName" class="form-label" style="margin-right: 7px;">First Name</label>
-                <input id="firstName" formControlName="firstName" class="form-control"
-                    placeholder="Enter your first name" style="height: 23px;width: 12%;"/>
-                <div *ngIf="contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched"
-                    class="text-danger">
+            <div class="col-md-6 mb-3">
+                <label for="firstName" class="form-label">First Name<span class="text-danger">*</span>:</label>
+                <input id="firstName" formControlName="firstName" class="form-control input-small"
+                    placeholder="Enter your first name" />
+                <div *ngIf="contactForm.get('firstName')?.invalid && submitAttempted" class="text-danger">
                     First name is required.
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3" style="margin-bottom: 7px;">
-                <label for="lastName" class="form-label" style="margin-right: 7px;">Last Name</label>
-                <input id="lastName" formControlName="lastName" class="form-control"
-                    placeholder="Enter your last name"  style="height: 23px;width: 12%;"/>
-                <div *ngIf="contactForm.get('lastName')?.invalid && contactForm.get('lastName')?.touched"
-                    class="text-danger">
+            <div class="col-md-6 mb-3">
+                <label for="lastName" class="form-label">Last Name<span class="text-danger">*</span>:</label>
+                <input id="lastName" formControlName="lastName" class="form-control input-small"
+                    placeholder="Enter your last name" />
+                <div *ngIf="contactForm.get('lastName')?.invalid && submitAttempted" class="text-danger">
                     Last name is required.
                 </div>
-
             </div>
 
-            <div class="form-group mb-3" style="margin-bottom: 7px;">
-                <label for="email" class="form-label" style="margin-right: 7px;">Email</label>
-                <input id="email" formControlName="email" type="email" class="form-control"
-                    placeholder="Enter your email" style="height: 23px;width: 12%;"/>
-                <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="text-danger">
+            <div class="form-group mb-3">
+                <label for="email" class="form-label">Email<span class="text-danger">*</span>:</label>
+                <input id="email" formControlName="email" type="email" class="form-control input-small"
+                    placeholder="Enter your email" style="margin-left: 60px;"/>
+                <div *ngIf="contactForm.get('email')?.invalid && submitAttempted" class="text-danger">
                     Valid email is required.
                 </div>
             </div>
         </div>
-        <div class="text-center" style="margin-top: 15px;">            
-            <span class="main-content"><button (click)="onSubmit()" class="new-btn">
-                {{ isAddMode ? 'Add' : 'Update' }}
-              </button></span>
+        <div class="text-center mt-3">            
+            <span class="main-content">
+                <button type="submit" class="submit-button">
+                    {{ isAddMode ? 'Add' : 'Update' }}
+                </button>
+                <button type="button" class="cancel-button" (click)="onClose()">
+                    Close
+                </button>
+            </span>
         </div>
     </form>
 </div>

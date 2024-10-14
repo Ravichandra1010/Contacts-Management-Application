@@ -48,6 +48,13 @@ namespace CMA.Server.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var contacts = LoadContacts();
+
+            // Check for duplicate email
+            if (contacts.Any(c => c.Email == contact.Email))
+            {
+                return Conflict("Email already exists.");
+            }
+
             contact.Id = contacts.Any() ? contacts.Max(c => c.Id) + 1 : 1;
             contacts.Add(contact);
             SaveContacts(contacts);
@@ -62,6 +69,12 @@ namespace CMA.Server.Controllers
             var contacts = LoadContacts();
             var existingContact = contacts.FirstOrDefault(c => c.Id == id);
             if (existingContact == null) return NotFound();
+
+            // Check for duplicate email
+            if (contacts.Any(c => c.Email == contact.Email && c.Id != id))
+            {
+                return Conflict("Email already exists.");
+            }
 
             existingContact.FirstName = contact.FirstName;
             existingContact.LastName = contact.LastName;
