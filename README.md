@@ -6,7 +6,7 @@ Node.js (Version: 20.14.0)
 
 Angular CLI
 
-Backend Setup (CMA.Server)
+#Backend Setup (CMA.Server)
 
 Open the Project in Visual Studio 2022
 
@@ -19,7 +19,7 @@ Database
 
 The backend uses contacts.json to store contact information.
 
-Frontend Setup (CMA.app)
+#Frontend Setup (CMA.app)
 
 Set Up the Angular Project
 
