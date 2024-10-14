@@ -10,5 +10,6 @@ ng serve --open
 
 Backend (CMA.Server)
 
+Visual Studio 2022
 Application should be running mode
 Database : contacts.json 
