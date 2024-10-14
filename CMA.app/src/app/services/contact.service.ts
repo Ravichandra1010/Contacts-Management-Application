@@ -28,13 +28,6 @@ getContacts(): Observable<any[]> {
     
 }
 
-// getContacts(): Observable<any> {
-//     return this.http.get<any>(`${this.apiUrl}`) // Change to your endpoint
-//       .pipe(
-//         //catchError(this.handleError)
-//       );
-//   }
-
   getContact(id: number): Observable<Contact> {
     return this.http.get<Contact>(`${this.apiUrl}/${id}`);
   }

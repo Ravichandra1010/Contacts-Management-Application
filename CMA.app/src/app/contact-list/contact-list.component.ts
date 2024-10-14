@@ -18,6 +18,7 @@ export class ContactListComponent implements OnInit {
   itemsPerPage = 5;
   searchTerm: string = '';
   isOpen:boolean=true;
+  
   constructor(private contactService: ContactService) { }
 
   ngOnInit(): void {
@@ -61,5 +62,6 @@ export class ContactListComponent implements OnInit {
   toggleOpen() {
     this.isShowForm = !this.isShowForm;
     this.isOpen = !this.isOpen;
+    this.isAddMode=true;
   }
 }

@@ -18,15 +18,9 @@
     "email": "ws@gmail.com"
   },
   {
-    "id": 6,
-    "firstname": "Ravichandra",
-    "lastname": "Naikanavre",
-    "email": "rn@gmail.com"
-  },
-  {
     "id": 7,
     "firstname": "Bill",
-    "lastname": "Gate",
+    "lastname": "Gate1",
     "email": "BGate@outlook.com"
   },
   {
@@ -64,5 +58,11 @@
     "firstname": "Rakesh",
     "lastname": "Kalange",
     "email": "RK@gmail.com"
+  },
+  {
+    "id": 15,
+    "firstname": "Varun",
+    "lastname": "Waghle",
+    "email": "VarunWaghale@gmail.com"
   }
 ]

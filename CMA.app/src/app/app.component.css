@@ -14,3 +14,16 @@
     line-height: 20px;
     margin-right: 10px;
 }
+.icon-wrapper {
+    position: relative; /* Ensure positioning context */
+}
+
+img {
+    vertical-align: middle; /* Align the icon vertically */
+}
+
+.welcome-text {
+    display: inline-block; /* Make the text inline for better alignment */
+    line-height: 40px; /* Match the height of the icon */
+    margin-left: 10px; /* Adds some space */
+}

@@ -32,7 +32,6 @@ export class ContactFormComponent {
   ngOnChanges() {
     
     if (this.contact) {
-      console.log(this.isAddMode);
       this.id = this.contact.id;
       this.contactForm.patchValue(this.contact);
     }
@@ -52,10 +51,6 @@ export class ContactFormComponent {
       const newContact: Contact = this.contactForm.value;
 
       if (this.isAddMode) {
-        this.contactService.addContact(newContact).subscribe(() => {
-          this.loadContacts.emit();
-          this.contactForm.reset();
-        });
 
         this.contactService.addContact(newContact).subscribe({
           next: () => {
@@ -63,6 +58,7 @@ export class ContactFormComponent {
             this.contactForm.reset();
             alert("Contact information added successfully");
             this.submitAttempted=false;
+            this.onClose(); 
           },
           error: (err) => {
             if (err.status === 409) { // Conflict status
@@ -78,6 +74,8 @@ export class ContactFormComponent {
           next: () => {
             this.loadContacts.emit();
             alert("Contact information updated successfully");
+            this.contactForm.reset();
+            this.onClose();
           },
           error: (err) => {
             if (err.status === 409) { // Conflict status
@@ -94,6 +92,5 @@ export class ContactFormComponent {
   onClose() {
     this.isShowForm = false;
     this.toggle.emit();
-    this.isAddMode = true;
   }
 }
