@@ -1,4 +1,4 @@
-CMA.app UI Project 
+UI Project: CMA.app
 
 Node Version : 20.14.0
 npm install ngx-pagination --save
