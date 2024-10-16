@@ -15,19 +15,10 @@ import { Contact } from '../app/models/contact.model'
     </div>
   `,
 })
-// <app-contact-form (contactAdded)="loadContacts()"></app-contact-form>
 export class AppComponent implements OnInit {
-  //contacts: Contact[] = [];
-
-  constructor(private contactService: ContactService) {}
+  constructor(private contactService: ContactService) { }
 
   ngOnInit(): void {
-   // this.loadContacts();
   }
 
-  // loadContacts(): void {
-  //   this.contactService.getContacts().subscribe(data => {
-  //     this.contacts = data;
-  //   });
-  // }
 }

@@ -26,11 +26,10 @@ export class ContactFormComponent {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]]
     });
-    console.log(this.isShowForm)
   }
 
   ngOnChanges() {
-    
+
     if (this.contact) {
       this.id = this.contact.id;
       this.contactForm.patchValue(this.contact);
@@ -57,8 +56,8 @@ export class ContactFormComponent {
             this.loadContacts.emit();
             this.contactForm.reset();
             alert("Contact information added successfully");
-            this.submitAttempted=false;
-            this.onClose(); 
+            this.submitAttempted = false;
+            this.onClose();
           },
           error: (err) => {
             if (err.status === 409) { // Conflict status

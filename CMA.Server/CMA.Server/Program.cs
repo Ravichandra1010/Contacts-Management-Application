@@ -1,3 +1,5 @@
+using CMA.Server.ErrorHandling;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,6 +29,11 @@ if (app.Environment.IsDevelopment())
 
 // Enable CORS
 app.UseCors("AllowAngularOrigin");
+
+app.UseMiddleware<GlobalErrorMiddleware>();
+
+// Other middleware registrations
+app.UseRouting();
 
 app.UseHttpsRedirection();
 
