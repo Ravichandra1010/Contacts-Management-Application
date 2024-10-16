@@ -6,45 +6,17 @@ using Newtonsoft.Json;
 namespace CMA.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] // Added prefix "api"
+    [Route("api/[controller]")]
     public class ContactsController : ControllerBase
     {
-        private string JsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "contacts.json"); // Use Path.Combine for better path handling
+        private readonly string jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "contacts.json");
 
-        private List<Contact> LoadContacts()
-        {
-            try
-            {
-                if (!System.IO.File.Exists(JsonFilePath))
-                {
-                    return new List<Contact>();
-                }
-
-                var jsonData = System.IO.File.ReadAllText(JsonFilePath);
-                return JsonConvert.DeserializeObject<List<Contact>>(jsonData) ?? new List<Contact>();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(Constants.LoadContactError, ex);
-            }
-        }
-
-        private void SaveContacts(List<Contact> contacts)
-        {
-            try
-            {
-                var jsonData = JsonConvert.SerializeObject(contacts, Formatting.Indented);
-                System.IO.File.WriteAllText(JsonFilePath, jsonData);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception (optional, can be done in the middleware)
-                throw new Exception(Constants.SaveContactError, ex);
-            }
-        }
-
+        /// <summary>
+        /// Retrieves all contacts.
+        /// </summary>
+        /// <returns>An ActionResult containing the list of contacts.</returns>
         [HttpGet]
-        public IActionResult GetAll()
+        public ActionResult<List<Contact>> GetAll()
         {
             try
             {
@@ -57,31 +29,35 @@ namespace CMA.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves a specific contact by ID.
+        /// </summary>
+        /// <param name="id">The ID of the contact to retrieve.</param>
+        /// <returns>An ActionResult containing the contact or a NotFound result.</returns>
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public ActionResult<Contact> Get(int id)
         {
-            var contacts = LoadContacts();
-            var contact = contacts.FirstOrDefault(c => c.Id == id);
-            if (contact == null) return NotFound();
-            return Ok(contact);
+            var contact = FindContactById(id);
+            return contact == null ? NotFound() : Ok(contact);
         }
 
+        /// <summary>
+        /// Creates a new contact.
+        /// </summary>
+        /// <param name="contact">The contact to create.</param>
+        /// <returns>An ActionResult representing the result of the creation operation.</returns>
         [HttpPost]
-        public IActionResult Create([FromBody] Contact contact)
+        public ActionResult<Contact> Create([FromBody] Contact contact)
         {
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                var contacts = LoadContacts();
-
-                // Check for duplicate email
-                if (contacts.Any(c => c.Email == contact.Email))
-                {
+                if (IsEmailExists(contact.Email))
                     return Conflict("Email already exists.");
-                }
 
-                contact.Id = contacts.Any() ? contacts.Max(c => c.Id) + 1 : 1;
+                contact.Id = GenerateNewContactId();
+                var contacts = LoadContacts();
                 contacts.Add(contact);
                 SaveContacts(contacts);
                 return CreatedAtAction(nameof(Get), new { id = contact.Id }, contact);
@@ -92,8 +68,14 @@ namespace CMA.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates an existing contact by ID.
+        /// </summary>
+        /// <param name="id">The ID of the contact to update.</param>
+        /// <param name="contact">The updated contact data.</param>
+        /// <returns>An ActionResult representing the result of the update operation.</returns>
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] Contact contact)
+        public ActionResult Update(int id, [FromBody] Contact contact)
         {
             try
             {
@@ -104,14 +86,10 @@ namespace CMA.Server.Controllers
                 if (existingContact == null) return NotFound();
 
                 // Check for duplicate email
-                if (contacts.Any(c => c.Email == contact.Email && c.Id != id))
-                {
+                if (IsEmailExists(contact.Email, id))
                     return Conflict("Email already exists.");
-                }
-
-                existingContact.FirstName = contact.FirstName;
-                existingContact.LastName = contact.LastName;
-                existingContact.Email = contact.Email;
+                
+                UpdateContact(existingContact, contact);
                 SaveContacts(contacts);
                 return NoContent();
             }
@@ -121,8 +99,13 @@ namespace CMA.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a contact by ID.
+        /// </summary>
+        /// <param name="id">The ID of the contact to delete.</param>
+        /// <returns>An ActionResult representing the result of the delete operation.</returns>
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public ActionResult Delete(int id)
         {
             try
             {
@@ -138,6 +121,75 @@ namespace CMA.Server.Controllers
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Loads the list of contacts from the JSON file.
+        /// </summary>
+        /// <returns>A list of contacts.</returns>
+        private List<Contact> LoadContacts()
+        {
+            if (!System.IO.File.Exists(jsonFilePath))
+            {
+                return new List<Contact>();
+            }
+
+            var jsonData = System.IO.File.ReadAllText(jsonFilePath);
+            return JsonConvert.DeserializeObject<List<Contact>>(jsonData) ?? new List<Contact>();
+        }
+
+        /// <summary>
+        /// Saves the list of contacts to the JSON file.
+        /// </summary>
+        /// <param name="contacts">The list of contacts to save.</param>
+        private void SaveContacts(List<Contact> contacts)
+        {
+            var jsonData = JsonConvert.SerializeObject(contacts, Formatting.Indented);
+            System.IO.File.WriteAllText(jsonFilePath, jsonData);
+        }
+
+        /// <summary>
+        /// Finds a contact by ID.
+        /// </summary>
+        /// <param name="id">The ID of the contact.</param>
+        /// <returns>The contact if found; otherwise, null.</returns>
+        private Contact FindContactById(int id)
+        {
+            return LoadContacts().FirstOrDefault(c => c.Id == id);
+        }
+
+        /// <summary>
+        /// Checks if an email already exists.
+        /// </summary>
+        /// <param name="email">The email to check.</param>
+        /// <param name="excludeId">The ID to exclude from the check (for updates).</param>
+        /// <returns>True if the email exists; otherwise, false.</returns>
+        private bool IsEmailExists(string email, int excludeId = 0)
+        {
+            var contacts = LoadContacts();
+            return contacts.Any(c => c.Email == email && c.Id != excludeId);
+        }
+
+        /// <summary>
+        /// Generates a new unique contact ID.
+        /// </summary>
+        /// <returns>A new unique contact ID.</returns>
+        private int GenerateNewContactId()
+        {
+            var contacts = LoadContacts();
+            return contacts.Any() ? contacts.Max(c => c.Id) + 1 : 1;
+        }
+
+        /// <summary>
+        /// Updates an existing contact with new data.
+        /// </summary>
+        /// <param name="existingContact">The existing contact to update.</param>
+        /// <param name="contact">The new contact data.</param>
+        private void UpdateContact(Contact existingContact, Contact contact)
+        {
+            existingContact.FirstName = contact.FirstName;
+            existingContact.LastName = contact.LastName;
+            existingContact.Email = contact.Email;
         }
     }
 }
